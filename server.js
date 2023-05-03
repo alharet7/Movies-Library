@@ -62,7 +62,7 @@ function trendingPageHandler(req, res) {
 }
 
 function searchPageHandler(req, res) {
-    let url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&page=1&include_adult=false`;
+    let url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${"The Super Mario Bros. Movie"}`
 
     try {
         axios.get(url)
