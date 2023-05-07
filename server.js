@@ -7,17 +7,23 @@ require('dotenv').config();
 const axios = require('axios');
 const PORT = 3000;
 const data = require(`./movieData/data.json`);
+const pg = require('pg');
 const apiKey = process.env.APIKey; //  To Run the code with my APIKey copy it from(./env.sample)
+server.use(express.json());
+//lab 15 --------------------------------------------------------------
+const client = new pg.Client(process.env.PGURL)
 
-
+//lab 13 ---------------------------------------------------------------
 server.get(`/`, homeHandler);
 server.get(`/favorite`, favoritePageHandler);
-//lab14--------------------------------------
+//lab 14-----------------------------------------------------------------
 server.get(`/trending`, trendingPageHandler);
 server.get('/search', searchPageHandler);
 server.get('/topRated', topRatedPageHandler);
 server.get('/nowplaying', nowPlayingPageHandler);
-
+//lab 15 --------------------------------------------------------------
+server.get('/getMovies', getMoviesHandler);
+server.post('/getMovies', addMovieHandler);
 server.get(`*`, defaultHandler);
 server.use(errorHandler);
 
@@ -129,25 +135,36 @@ function nowPlayingPageHandler(req, res) {
         errorHandler(error, req, res)
     }
 }
+// lab 15-----------------------------------------------------------------------------------
+function getMoviesHandler(req, res) {
+
+    const sql = `SELECT * FROM addMovie`;
+    client.query(sql)
+        .then(data => {
+            res.send(data.rows);
+        })
+
+        .catch((error) => {
+            errorHandler(error, req, res)
+        })
+}
+function addMovieHandler(req, res) {
+    const newMovie = req.body;
+    console.log(newMovie);
+    const sql = `INSERT INTO addMovie (title, overView, mins, releaseDate, posterPath)
+    VALUES ($1, $2, $3, $4, $5);`
+    const values = [newMovie.title, newMovie.overView, newMovie.mins, newMovie.releaseDate, newMovie.posterPath];
+    client.query(sql, values)
+        .then(data => {
+            res.send("The data has been added successfully");
+        })
+        .catch((error) => {
+            errorHandler(error, req, res)
+        })
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Constructor functions--------------------------------------------------------------------- 
 
 function Movie(title, poster_path, overview) {
     this.title = title
@@ -181,6 +198,10 @@ function errorHandler(error, req, res) {
     res.status(500).send(err);
 }
 
-server.listen(PORT, () => {
-    console.log(`listening on ${PORT}`)
-});
+client.connect()
+    .then(() => {
+        server.listen(PORT, () => {
+            console.log(`listening on ${PORT}`)
+        })
+
+    })
