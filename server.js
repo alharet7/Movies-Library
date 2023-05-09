@@ -5,7 +5,7 @@ const cors = require('cors')
 server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
-const PORT = 3000;
+const PORT = 3001;
 const data = require(`./movieData/data.json`);
 const pg = require('pg');
 const apiKey = process.env.APIKey; //  To Run the code with my APIKey copy it from(./env.sample)
@@ -13,7 +13,7 @@ server.use(express.json());
 //lab 15 --------------------------------------------------------------
 const client = new pg.Client(process.env.PGURL)
 
-//lab 13 ---------------------------------------------------------------
+//lab 13 ----------------------------------------------------------------
 server.get(`/`, homeHandler);
 server.get(`/favorite`, favoritePageHandler);
 //lab 14-----------------------------------------------------------------
@@ -21,9 +21,14 @@ server.get(`/trending`, trendingPageHandler);
 server.get('/search', searchPageHandler);
 server.get('/topRated', topRatedPageHandler);
 server.get('/nowplaying', nowPlayingPageHandler);
-//lab 15 --------------------------------------------------------------
+//lab 15 ----------------------------------------------------------------
 server.get('/getMovies', getMoviesHandler);
 server.post('/getMovies', addMovieHandler);
+// lab 16 ----------------------------------------------------------------
+server.delete('/getMovies/:id', deleteMovieHandler);
+server.put('/getMovies/:id', updateMovieHandler);
+server.get('/getMoviesById', geteMoviesByIdHandler);
+//------------------------------------------------------------------------
 server.get(`*`, defaultHandler);
 server.use(errorHandler);
 
@@ -162,7 +167,46 @@ function addMovieHandler(req, res) {
             errorHandler(error, req, res)
         })
 }
+// lab 16-----------------------------------------------------------------------------------
+function deleteMovieHandler(req, res) {
 
+    const id = req.params.id;
+    const sql = `DELETE FROM addMovie WHERE id= ${id};`
+    client.query(sql)
+        .then((data) => {
+            res.status(202).send(data);
+        })
+        .catch((error) => {
+            errorHandler(error, req, res)
+        })
+};
+function updateMovieHandler(req,res){
+
+    const {id} = req.params;
+    const sql = `UPDATE addMovie
+    SET title = $1, overview =$2, mins= $3, releasedate = $4, posterpath = $5
+    WHERE id = ${id};`
+    const {title, overview, mins, releasedate, posterpath} = req.body;
+    const values = [title, overview, mins, releasedate, posterpath];
+    client.query(sql,values).then((data)=>{
+        res.send(data)
+    })
+    .catch((error)=>{
+        errorHandler(error,req,res)
+    })
+};
+function geteMoviesByIdHandler(req,res){
+    
+    let id = req.query.id;
+    const sql = `SELECT * FROM addMovie WHERE id = ${id};`
+    client.query(sql)
+        .then((data) => {
+            res.send(data.rows)
+        })
+        .catch((error) => {
+            errorHandler(error, req, res)
+        })
+}
 
 //Constructor functions--------------------------------------------------------------------- 
 
