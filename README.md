@@ -41,12 +41,36 @@ Open postgerSQL shell server (SSL mode) :`psql`
 5. Quit : `\q`
 
 ## Project Features
-- I made a a trending items Page with url and endpoint localhost:3000/trending to displays the trending movise.
-- I made a search Page with url and endpoint whith path localhost:3000/search to displays the search Page.
-- I made  a top rated movies Page with url and endpoint whith path localhost:3000/toprated to displays the top rated movies Page.
-- I made  a Now playing movies Page with url and endpoint whith path localhost:3000/nowplaying to displays the now playing movies Page.
+- I made a a trending movies Page with url and endpoint localhost:3001/trending to displays the trending movise.
+- I made a search Page with url and endpoint whith path localhost:3001/search to displays the search Page.
+- I made  a top rated movies Page with url and endpoint whith path localhost:3001/toprated to displays the top rated movies Page.
+- I made  a Now playing movies Page with url and endpoint whith path localhost:3001/nowplaying to displays the now playing movies Page.
 - and  last thing I made an error handlers:
 - for server error (state 500)
 - and to handle page not found error (status 404).
+
+## Updated endpoints/:
+- To run the favorite movise page:
+`localhost:3001/favorite`
+- To run the trending movise page:
+`localhost:3001/trending`
+- To search for a movie page:
+`localhost:3001/search`
+- To run the topRated movise page:
+`localhost:3001/topRated`
+- To run the nowplaying movise page:
+`localhost:3001/nowplaying`
+- To get movise page:
+`localhost:3001/getMovies`
+- To add movise :
+`localhost:3001/addMovies` <!--- using post method--->
+- To delete a movie:
+`localhost:3001/deleteMovie/:id`
+- To Update a movie information:
+`localhost:3001/upDateMovie/:id`
+- To get a Specific movie by it's id :
+`localhost:3001/getMoviesById?id=<id number>`
+
+
 
 [database]: ./assest/Database-01.png
