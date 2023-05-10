@@ -5,7 +5,7 @@ const cors = require('cors')
 server.use(cors());
 require('dotenv').config();
 const axios = require('axios');
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const data = require(`./movieData/data.json`);
 const pg = require('pg');
 const apiKey = process.env.APIKey; //  To Run the code with my APIKey copy it from(./env.sample)
@@ -23,10 +23,10 @@ server.get('/topRated', topRatedPageHandler);
 server.get('/nowplaying', nowPlayingPageHandler);
 //lab 15 ----------------------------------------------------------------
 server.get('/getMovies', getMoviesHandler);
-server.post('/getMovies', addMovieHandler);
+server.post('/addMovies', addMovieHandler);
 // lab 16 ----------------------------------------------------------------
-server.delete('/getMovies/:id', deleteMovieHandler);
-server.put('/getMovies/:id', updateMovieHandler);
+server.delete('/deleteMovie/:id', deleteMovieHandler);
+server.put('/upDateMovie/:id', updateMovieHandler);
 server.get('/getMoviesById', geteMoviesByIdHandler);
 //------------------------------------------------------------------------
 server.get(`*`, defaultHandler);
@@ -168,6 +168,7 @@ function addMovieHandler(req, res) {
         })
 }
 // lab 16-----------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
 function deleteMovieHandler(req, res) {
 
     const id = req.params.id;
